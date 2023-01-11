@@ -1,0 +1,14 @@
+@import 'variables';
+// Bootstrap and its default variables
+@import 'bootstrap/scss/bootstrap';
+// BootstrapVue and its default variables
+@import 'bootstrap-vue/src/index.scss';
+
+@import 'vue-material-design-icons/styles.css';
+@import "common";
+
+body {
+    // font: 14px/16px $font-primary;
+    // color: $text-color;
+    // background-color: $body-bg;
+}
