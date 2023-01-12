@@ -14,16 +14,20 @@
       <b-col
         v-for="(quickView, index) in quickViews"
         :key="`dashboard-card-item-${index}`"
+        cols="12"
+        md="6"
+        xl="3"
+        class="mb-3"
       >
-        <b-card class="shadow-sm border-0">
+        <b-card class="dashboard-card shadow-sm border-0">
           <b-row>
             <b-col cols="4" class="left">
               <client-only>
                 <b-skeleton
                   slot="placeholder"
                   type="avatar"
-                  height="100px"
-                  width="100px"
+                  height="80px"
+                  width="80px"
                 ></b-skeleton>
 
                 <progress-circle
@@ -32,6 +36,7 @@
                   :circle-color="circleColor"
                   :start-color="startColor"
                   :stop-color="stopColor"
+                  diameter="80"
                   inner-display="slot"
                 >
                   <span>
@@ -43,11 +48,11 @@
                 </progress-circle>
               </client-only>
             </b-col>
-            <b-col cols="4" class="right">
-              <h5 class="text-uppercase">{{ quickView.title }}</h5>
-              <h3 class="text-uppercase">{{ quickView.data }}</h3>
+            <b-col cols="5" class="right">
+              <p class="h6 text-uppercase">{{ quickView.title }}</p>
+              <p class="h5 text-uppercase">{{ quickView.data }}</p>
             </b-col>
-            <b-col cols="4">
+            <b-col cols="3">
               <component :is="getIconName(quickView.icon)"></component>
             </b-col>
           </b-row>
@@ -55,13 +60,72 @@
       </b-col>
     </b-row>
 
-    <client-only placeholder="Loading...">
-      <DoughnutChart
-        :chart-data="doughChartData"
-        :chart-options="doughChartOptions"
-        :height="430"
-      />
-    </client-only>
+    <!-- ACQUISITION CHANNELS -->
+
+    <b-row class="mt-3">
+      <b-col cols="12" lg="6">
+        <b-card>
+          <h6 class="text-uppercase">Acquisition Channels</h6>
+          <div class="dropdown-divider"></div>
+          <b-row>
+            <b-col cols="12" md="6" lg="12" xl="6">
+              <client-only placeholder="Loading...">
+                <div class="position-relative">
+                  <DoughnutChart
+                    :chart-data="doughChartData"
+                    :chart-options="doughChartOptions"
+                    :height="430"
+                  />
+                  <div class="position-absolute center text-center">
+                    <p class="mb-0">1,900,128</p>
+                    <p class="mb-0">Views Total</p>
+                  </div>
+                </div>
+              </client-only>
+            </b-col>
+            <b-col cols="12" md="6" lg="12" xl="6">
+              <div class="acq-channel-data">
+                <div
+                  v-for="(item, itemIndex) in doughChartData.labels"
+                  :key="`acq-channel-data-item-${itemIndex}`"
+                  class="acq-channnel-data-item"
+                >
+                  <div
+                    class="acq-channel-data-item-color"
+                    :style="{
+                      backgroundColor:
+                        doughChartData.datasets[0].backgroundColor[itemIndex],
+                    }"
+                  ></div>
+                  <div class="right">
+                    <div class="acq-channel-data-item-text">
+                      <p class="mb-0">{{ item }}</p>
+                      <p class="mb-0">
+                        + {{ doughChartData.datasets[0].data[itemIndex] }} %
+                      </p>
+                    </div>
+                    <b-progress
+                      :value="
+                        parseInt(doughChartData.datasets[0].data[itemIndex])
+                      "
+                      :max="max"
+                      height="5px"
+                    ></b-progress>
+                  </div>
+                </div>
+              </div>
+            </b-col>
+          </b-row>
+        </b-card>
+        <!-- USERS BY COUNTRY -->
+      </b-col>
+      <b-col cols="12" lg="6" class="mt-3 mt-lg-0">
+        <b-card>
+          <h6 class="text-uppercase">Users By Country</h6>
+          <div class="dropdown-divider"></div>
+        </b-card>
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 
@@ -81,18 +145,23 @@ export default {
         },
       ],
       doughChartData: {
-        // labels: ['NuVue', 'VueJit', 'IftShi', 'KoinVi', 'MegsWear', 'Millgh'],
+        labels: [
+          'Ad Campaigns',
+          'Direct Traffic',
+          'Referral Traffic',
+          'Search engines',
+          'Other',
+        ],
         datasets: [
           {
             label: 'Visualization',
-            data: [72, 131, 12, 3, 4, 55],
+            data: [17, 38, 70, 22, 87],
             backgroundColor: [
-              'rgba(20, 255, 0, 0.85)',
-              'rgba(200, 5, 0, 0.85)',
-              'rgba(10, 220, 0, 0.85)',
-              'rgba(2, 100, 0, 0.85)',
-              'rgba(20, 55, 0, 0.85)',
-              'rgba(120, 155, 0, 0.85)',
+              '#b9f2a1',
+              '#6eba8c',
+              '#0e8174',
+              '#005562',
+              '#10c4b5',
             ],
             borderColor: 'rgba(100, 155, 0, 1)',
             borderWidth: 0,
@@ -102,12 +171,18 @@ export default {
       doughChartOptions: {
         responsive: true,
         maintainAspectRatio: false,
-        offset: 8,
+        offset: 0,
         radius: 160,
-        spacing: 4,
-        hoverOffset: 32,
+        spacing: 0,
+        hoverOffset: 20,
         hoverBorderWidth: 1,
         weight: 0,
+        cutout: 100,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       },
 
       startColor: '#e6e6e6',
@@ -145,6 +220,11 @@ export default {
         },
       ],
     }
+  },
+  computed: {
+    max() {
+      return 100
+    },
   },
   methods: {
     percent(a, b) {

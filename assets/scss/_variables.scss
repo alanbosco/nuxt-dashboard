@@ -1,7 +1,7 @@
 // colors
 
-$theme-primary: #209e91;
-$theme-secondary: #4daa4b;
+$primary: #209e91;
+$secondary: #4daa4b;
 
 $body-bg: #f0f3f4;
 $body-colo: #666;
@@ -9,3 +9,13 @@ $body-colo: #666;
 // text
 $font-family-sans-serif: 'Roboto', sans-serif;
 
+// grid
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1400px,
+  xxl: 1500px
+)
